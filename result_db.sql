@@ -102,33 +102,36 @@ and seller_id = 200005
 WITH op AS (
     SELECT * FROM ordered_products
     WHERE ordered_product_status != "Cancelled"
-)
-,p AS (
+),
+pc AS (
     SELECT p.product_code
     ,p.product_description
     ,p.category_id
-    ,SUM(IFNULL(op.quantity, 0)) AS Quantity
-    ,COUNT(DISTINCT order_id) AS orders
-    ,CAST(SUM(IFNULL(op.quantity, 0)) AS REAL)/CAST(COUNT(DISTINCT order_id) AS REAL) AS avg
-    FROM products AS p
-    LEFT JOIN op
-        ON p.product_id = op.product_id
-    GROUP BY p.product_code
-    ,p.product_description
-    ,p.category_id
-),
-c AS (
-    SELECT p.category_id
     ,c.category_description
-    ,SUM(IFNULL(op.quantity, 0)) AS Quantity
-    ,COUNT(DISTINCT order_id) AS orders
-    ,CAST(SUM(IFNULL(op.quantity, 0)) AS REAL)/CAST(COUNT(DISTINCT order_id) AS REAL) AS avg
+    ,CAST(IFNULL(op.quantity, 0) AS REAL) AS quantity
+    ,order_id
     FROM products AS p
     LEFT JOIN op
         ON p.product_id = op.product_id
     LEFT JOIN categories AS c
-    ON p.category_id = c.category_id
-    GROUP BY p.category_id, c.category_description
+        ON p.category_id = c.category_id
+),
+p AS (
+    SELECT product_code
+    ,product_description
+    ,category_id
+    ,SUM(quantity)/COUNT(DISTINCT order_id) AS avg
+    FROM pc
+    GROUP BY product_code
+    ,product_description
+    ,category_id
+)
+,c AS (
+    SELECT category_id
+    ,category_description
+    ,SUM(quantity)/COUNT(DISTINCT order_id) AS avg
+    FROM pc
+    GROUP BY category_id, category_description
 )
 SELECT c.category_description AS [Category Description]
 ,p.product_code AS [Product Code]
@@ -137,5 +140,7 @@ SELECT c.category_description AS [Category Description]
 ,PRINTF("%.2f", c.avg) AS [Avg Qty Sold for Category]
 FROM p
 JOIN c
-ON p.category_id = c.category_id
-AND IFNULL(p.avg, 0) < c.avg;
+    ON p.category_id = c.category_id
+    AND IFNULL(p.avg, 0) < c.avg
+ORDER BY [Category Description], [Product Description]
+;
