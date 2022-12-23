@@ -29,7 +29,7 @@ def route(shopper):
             elif m_item == 2:
                 b_cntrl.add_item(shopper)
             elif m_item == 3:
-                view_basket(shopper)
+                b_cntrl.view_basket(shopper)
             elif m_item == 4:
                 checkout(shopper)
             elif m_item == 5:
@@ -42,7 +42,7 @@ def route(shopper):
                 print("\nYou have entered an invalid menu item number. Please select a correct number from the menue")
         except:
             print("\nSomething wrong with your input, please try again")   
-            # raise   
+            raise   
 
 def main():
     shopper = s_cntrl.login()

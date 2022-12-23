@@ -16,6 +16,7 @@ def list_p_sellers_by_id(product_id):
                     ps.seller_id
                     ,ps.price
                     ,s.seller_name
+                    ,ps.product_id
                 FROM product_sellers AS ps
                     JOIN sellers AS s
                         ON ps.seller_id = s.seller_id

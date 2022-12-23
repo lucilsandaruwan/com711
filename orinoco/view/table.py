@@ -1,4 +1,10 @@
-def dinamic_table(headers, data):
+def dinamic_table(title, headers, data):
+    print ("\n" + title + "\n")
+    title_undrl = ""
+    for c in title:
+        title_undrl += "-"
+    print(title_undrl)
+
     # headers = (
     #     {"length": 8, "lable": "Pos"}
     #     ,{"length": 30, "lable": "Lang"}
@@ -32,7 +38,7 @@ def dinamic_table(headers, data):
         data_txt = ""
         for k, v in enumerate(item):
             # print(k, headers[k], v)
-            data_txt += "{1:<{0}}".format(headers[k]["length"], v)
+            data_txt += "{1:<{0}}".format(headers[k]["length"], str(v))
         print(data_txt)
     # for k, v in d.items():
     #     data_txt = ""

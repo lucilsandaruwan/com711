@@ -2,7 +2,7 @@ from model import order as o_mdl
 from view import table
 
 def order_history(shopper):
-    print("HI shopper", shopper)
+    
     orders = o_mdl.get_by_shopper_id(shopper["id"])
 
     headers = (
@@ -15,4 +15,4 @@ def order_history(shopper):
         ,{"length": 8, "lable": "Status"}
     )
     # print(orders)
-    table.dinamic_table(headers, orders)
+    table.dinamic_table("Order History", headers, orders)
