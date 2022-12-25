@@ -3,6 +3,7 @@ from view import options_list as ol
 from view import table
 from model import product as p
 from model import basket as b
+from view import str_format as sf
 import functools
 
 def get_quantity():
@@ -10,24 +11,24 @@ def get_quantity():
         qty = int(input("Enter the quantity of the selected product you want to buy: "))
         return qty
     except:
-        print("\nYou have entered a wrong input. Please try with an integer")
+        print(sf.error("\nYou have entered a wrong input. Please try with an integer"))
         return get_quantity()
 
 def update_basket(basket, product):
     u_prod = {
-        "basket_id": basket[0][5]
+        "basket_id": basket[0]["basket_id"]
         ,"product_id": product["product_id"]
         ,"quantity": product["quantity"]
         ,"price": product["price"]
         ,"seller_id": product["seller_id"]
     }
-    filtered = list(filter(lambda i: i[6] == product["product_id"], basket))
+    filtered = list(filter(lambda i: i["product_id"] == product["product_id"], basket))
     if len(filtered) > 0:
         f_product = filtered[0]
         u_prod["quantity"] = int(u_prod["quantity"]) + int(f_product[2])
-        if f_product[7] != product["seller_id"]:
-            print("""\nThe product has already added to cart from the seller {}. 
-                If you need to add more from the same product, select the same seller""".format(f_product[1]))
+        if f_product["seller_id"] != product["seller_id"]:
+            print(sf.warning("""\nThe product has already added to cart from the seller {}. 
+                If you need to add more from the same product, select the same seller""".format(f_product["seller_name"])))
             return False
         else:
             return b.update_basket_content(u_prod)
@@ -65,19 +66,28 @@ def add_item(shopper):
         ret = b.create_basket(shopper["id"], product)
     
     if (ret):
-        print("\nItem added to your basket\n")
+        print(sf.sucess("\nItem added to your basket\n"))
+        # print("\nItem added to your basket\n")
     else:
-        print("please try again")
+        print(sf.warning("please try again"))
+        # print("please try again")
     
 def view_basket(shopper):
     basket = b.get_by_shopper(shopper["id"])
     if len(basket) == 0:
-        print("There are no items in the basket.")
+        print(sf.warning("There are no products in the basket to view."))
+        # print("There are no items in the basket.")
         return 
     total = 0
     for place, item in enumerate(basket):
-        item_l = list(item)[0:5]
-        total += item_l[4]
+        item_l = [
+            item["product_description"]
+            ,item["seller_name"]
+            ,item["quantity"]
+            ,item["formatted_price"]
+            ,item["total"]
+        ]
+        total += item["total"]
         item_l[4] = "£{:.2f}".format(item_l[4])
         basket[place] = item_l
     basket.append(("", "", "", "", ""))

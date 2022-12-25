@@ -1,4 +1,5 @@
 from model import db_connector
+from view import str_format as sf
 import sqlite3
 
 def create_basket(shopper_id, product):
@@ -38,7 +39,7 @@ def create_basket(shopper_id, product):
         return True
     except sqlite3.IntegrityError as err:
         if err.args == ('UNIQUE constraint failed: basket_contents.basket_id, basket_contents.product_id',):
-            print("\nThe product has been added from a different seller. So, please try to buy it from the same seller")
+            print(sf.warning("\nThe product has been added from a different seller. So, please try to buy it from the same seller"))
             return False
     except:				 
         print("Transaction failed, rolling back")
@@ -47,8 +48,6 @@ def create_basket(shopper_id, product):
         return False
 
 def update_basket_content(product):
-    print("update product")
-    print(product)
     con = db_connector.get_connection()
     cursor = con.cursor()
     cursor.execute("PRAGMA foreign_keys=ON") 
@@ -70,13 +69,14 @@ def update_basket_content(product):
         return False
 
 def create_basket_content(product):
+    print(product)
     con = db_connector.get_connection()
     cursor = con.cursor()
     cursor.execute("PRAGMA foreign_keys=ON") 
     try:
         query = """
                 INSERT INTO basket_contents(basket_id,product_id,seller_id,quantity,price) 
-                    ,?
+                    SELECT ?
                     ,?
                     ,?
                     ,?
@@ -88,22 +88,24 @@ def create_basket_content(product):
             , product["seller_id"]
             , product["quantity"]
             , product["price"]
+            
         ))
         cursor.execute("COMMIT")
         con.close()
         return True
     except:
         con.close()
-        return True
+        return False
 
 def get_by_shopper(shopper_id):
-    con = db_connector.get_connection()
+    con = db_connector.get_dict_connection()
     cursor = con.cursor()
     query = """
         SELECT p.product_description
         ,s.seller_name
-        ,SUM(bc.quantity) AS qty
-        ,PRINTF("£%.2f", bc.price) 
+        ,SUM(bc.quantity) AS quantity
+        ,PRINTF("£%.2f", bc.price) AS formatted_price
+        ,price
         ,SUM(bc.quantity) * bc.price AS total
         ,sb.basket_id
         ,bc.product_id
@@ -122,6 +124,5 @@ def get_by_shopper(shopper_id):
         ,bc.price
     """
     cursor.execute(query, (shopper_id,))
-    ret = cursor.fetchall()
-    con.close()
-    return ret
+    return cursor.fetchall()
+

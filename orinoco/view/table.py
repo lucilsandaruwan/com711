@@ -1,9 +1,13 @@
+from view import str_format as sf
+
 def dinamic_table(title, headers, data):
     print ("\n" + title + "\n")
-    title_undrl = ""
-    for c in title:
-        title_undrl += "-"
-    print(title_undrl)
+    # title_undrl = ""
+    # for c in title:
+    #     title_undrl += "-"
+    # print(title_undrl)
+
+    print(sf.underline(sf.bold(title)))
 
     # headers = (
     #     {"length": 8, "lable": "Pos"}
@@ -14,7 +18,7 @@ def dinamic_table(title, headers, data):
     header_txt = "\n"
     for ele in headers:
         header_txt += "{1:<{0}}".format(ele["length"], ele["lable"])
-    print (header_txt)
+    print(sf.bold(header_txt))
     # separator = ""
     # for c in header_txt:
     #     separator += "-"
