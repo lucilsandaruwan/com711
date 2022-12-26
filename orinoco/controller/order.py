@@ -8,7 +8,7 @@ from view import str_format as sf
 
 def order_history(shopper):
     
-    orders = o_mdl.get_by_shopper_id(shopper["id"])
+    orders = o_mdl.get_by_shopper_id(shopper["shopper_id"])
     v_orders = orders[0:7]
     headers = (
         {"length": 10, "lable": "Order ID"}
@@ -82,7 +82,7 @@ def create_card():
     return ret
 
 def checkout(shopper):
-    shopper_id = shopper["id"]
+    shopper_id = shopper["shopper_id"]
     basket = b_mdl.get_by_shopper(shopper_id)
     if(len(basket) == 0):
         print(sf.warning("There are no products in basket to checkout"))

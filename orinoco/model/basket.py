@@ -42,7 +42,7 @@ def create_basket(shopper_id, product):
             print(sf.warning("\nThe product has been added from a different seller. So, please try to buy it from the same seller"))
             return False
     except:				 
-        print("Transaction failed, rolling back")
+        print(sf.warning("\nTransaction failed, rolling back"))
         cursor.execute("ROLLBACK")	
         con.close()
         return False
@@ -65,11 +65,10 @@ def update_basket_content(product):
         con.close()
         return True
     except:
-        raise
+        con.close()
         return False
 
 def create_basket_content(product):
-    print(product)
     con = db_connector.get_connection()
     cursor = con.cursor()
     cursor.execute("PRAGMA foreign_keys=ON") 

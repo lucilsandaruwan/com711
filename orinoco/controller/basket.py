@@ -1,3 +1,6 @@
+# This file contains basket related handlers and functions 
+# and some functions of this file is depending on the functools library
+
 from model import category
 from view import options_list as ol
 from view import table
@@ -7,10 +10,14 @@ from view import str_format as sf
 import functools
 
 def get_quantity():
+    """This is a recursive function to take a correct product quantity from user.
+        returns:
+            qty(Integer): The converted number taken by the user 
+    """
     try:
         qty = int(input("Enter the quantity of the selected product you want to buy: "))
         return qty
-    except:
+    except: # the exception trigger if user enter a value that can't be casted to integer
         print(sf.error("\nYou have entered a wrong input. Please try with an integer"))
         return get_quantity()
 
@@ -37,6 +44,7 @@ def update_basket(basket, product):
     return True
 
 def add_item(shopper):
+    shopper_id = shopper["shopper_id"]
     cats = category.get_list()
     cat_id = ol._display_options(cats,"Porduct Categories","category")
 
@@ -59,11 +67,11 @@ def add_item(shopper):
         ,"price": selected_seller[1]
     }
     ret = False
-    basket = b.get_by_shopper(shopper["id"])
+    basket = b.get_by_shopper(shopper_id)
     if len(basket) > 0:
         ret = update_basket(basket, product)
     else: 
-        ret = b.create_basket(shopper["id"], product)
+        ret = b.create_basket(shopper_id, product)
     
     if (ret):
         print(sf.sucess("\nItem added to your basket\n"))
@@ -73,7 +81,7 @@ def add_item(shopper):
         # print("please try again")
     
 def view_basket(shopper):
-    basket = b.get_by_shopper(shopper["id"])
+    basket = b.get_by_shopper(shopper["shopper_id"])
     if len(basket) == 0:
         print(sf.warning("There are no products in the basket to view."))
         # print("There are no items in the basket.")
