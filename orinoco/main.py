@@ -23,10 +23,10 @@ MENUE_ITEMS = (
 def exit_greeting():
     print(sf.sucess("Good bye!"))
 
-def route(shopper):
+def route(shopper_id):
     """ To display the menue and rout the selected menue number to relevent controller after user login to the system.
             Args:
-                shopper (dictionary): A dictionary having elements "shopper_id:<shopper_id>" 
+                shopper_id (string): the shopper id of shoppers table
  
             Returns:
                 void
@@ -45,13 +45,13 @@ def route(shopper):
         if m_item == 0:
             print(MENUE_ITEMS)
         elif m_item == 1:
-            o_cntrl.order_history(shopper)
+            o_cntrl.order_history(shopper_id)
         elif m_item == 2:
-            b_cntrl.add_item(shopper)
+            b_cntrl.add_item(shopper_id)
         elif m_item == 3:
-            b_cntrl.view_basket(shopper)
+            b_cntrl.view_basket(shopper_id)
         elif m_item == 4:
-            o_cntrl.checkout(shopper)
+            o_cntrl.checkout(shopper_id)
         elif m_item == 5:
             exit_greeting()
             break
@@ -67,9 +67,14 @@ def init():
             Returns:
                 void
     """
-    shopper = s_cntrl.login()
-    if shopper:
-        route(shopper)    
-    else: 
-        exit_greeting()
+    try:
+        shopper = s_cntrl.login()
+        if shopper:
+            shopper_id = shopper["shopper_id"]
+            route(shopper_id)    
+        else: 
+            exit_greeting()
+    except :
+        print(sf.warning("There is an exception, please try again"))
+        init()
 init()

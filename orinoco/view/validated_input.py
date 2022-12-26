@@ -10,10 +10,10 @@ def defined_values(message, values, required):
     value = input(message)
     values = list(map(str, values))
     if required and not value:
-        print(sf.error("\nPlease enter a value, this is mandatory!"))
+        print(sf.error("\nPlease enter a value, this is mandatory."))
         return defined_values(message, values, required)
     elif value and value not in values:
-        print(sf.error("\nPlease enter a value from {} ".format(", ".join(values))))
+        print(sf.warning("\nPlease enter a value from {} ".format(", ".join(values))))
         return defined_values(message, values, required)
     else:
         return value

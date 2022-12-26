@@ -6,9 +6,9 @@ from view import options_list as ol
 from view import validated_input as vi
 from view import str_format as sf 
 
-def order_history(shopper):
+def order_history(shopper_id):
     
-    orders = o_mdl.get_by_shopper_id(shopper["shopper_id"])
+    orders = o_mdl.get_by_shopper_id(shopper_id)
     v_orders = orders[0:7]
     headers = (
         {"length": 10, "lable": "Order ID"}
@@ -24,8 +24,10 @@ def order_history(shopper):
 
 def get_delivery_address(shopper_id):
     d_addresses = o_mdl.get_shopper_delevery_addresses(shopper_id)
-    print(d_addresses)
-    if len(d_addresses) > 0:
+    add_lngth = len(d_addresses)
+    if add_lngth == 1:
+        return d_addresses[0][0]
+    elif add_lngth > 1:
         d_add_2_show = list(
             map(
                 lambda x: (
@@ -35,8 +37,7 @@ def get_delivery_address(shopper_id):
                 ), d_addresses
             )
         )
-        d_add_id = ol._display_options(d_add_2_show, "Delivery Addresses", "delivery address")
-        return d_add_id
+        return ol._display_options(d_add_2_show, "Delivery Addresses", "delivery address")
     else:
         return None
 
@@ -81,13 +82,12 @@ def create_card():
     ret["c_number"] = vi.fix_length_number("Enter the 16-digit card number: ", 16, True)
     return ret
 
-def checkout(shopper):
-    shopper_id = shopper["shopper_id"]
+def checkout(shopper_id):
     basket = b_mdl.get_by_shopper(shopper_id)
     if(len(basket) == 0):
         print(sf.warning("There are no products in basket to checkout"))
         return
-    b_cntrl.view_basket(shopper)
+    b_cntrl.view_basket(shopper_id)
 
     d_add_id = get_delivery_address(shopper_id)
     card_id = get_card(shopper_id)
@@ -113,7 +113,6 @@ def checkout(shopper):
 
     
     ret = o_mdl.creae_order(params)
-    print(params)
     if ret:
         print(sf.sucess("Checkout complete, your order has been placed"))
     else:

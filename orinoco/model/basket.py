@@ -105,7 +105,7 @@ def get_by_shopper(shopper_id):
         ,SUM(bc.quantity) AS quantity
         ,PRINTF("£%.2f", bc.price) AS formatted_price
         ,price
-        ,SUM(bc.quantity) * bc.price AS total
+        ,SUM(bc.quantity * bc.price) AS total
         ,sb.basket_id
         ,bc.product_id
         ,bc.seller_id

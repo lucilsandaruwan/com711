@@ -118,7 +118,6 @@ def creae_order(params):
         # Create a card when the card id is none
         if card_id == None:
             card_id = get_sequence_number("shopper_payment_cards") 
-            print("card_id is = ", card_id)
             c_type, c_number = itemgetter(
                 'c_type', 'c_number'
             )(card)  
