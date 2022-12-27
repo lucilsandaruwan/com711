@@ -2,10 +2,10 @@
 # and some functions of this file is depending on the functools library
 
 from model import category
-from view import options_list as ol
-from view import table
 from model import product as p
 from model import basket as b
+from view import options_list as ol
+from view import table
 from view import str_format as sf
 import functools
 
@@ -49,11 +49,11 @@ def update_basket(basket, product):
     # if the product is avaialable in filtered need to increase the quantity
     if len(filtered) > 0: 
         f_product = filtered[0]
-        u_prod["quantity"] = int(u_prod["quantity"]) + int(f_product[2])
+        u_prod["quantity"] = int(u_prod["quantity"]) + int(f_product["quantity"])
         # this is to handle an exception that shopper can't buy same product from two sellers at the same time according to-
         # the unique key design of basket_contents table.
         if f_product["seller_id"] != product["seller_id"]:
-            print(sf.warning("""\nThe product has already added to cart from the seller {}. 
+            print(sf.warning("""\nThe product has been added to cart from the seller {} already. 
                 If you need to add more from the same product, select the same seller""".format(f_product["seller_name"])))
             return False
         else:
@@ -130,6 +130,7 @@ def view_basket(shopper_id):
     basket.append(("", "", "", "", ""))
     # add element to draw Basket Total row.
     basket.append(("", "Basket Total", "", "", "£{:.2f}".format(total)))
+    # set headers to pass to the view to draw the table
     headers = (
         {"length": 70, "lable": "Product Description"}
         ,{"length": 20, "lable": "Seller Name"}

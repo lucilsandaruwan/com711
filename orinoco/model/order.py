@@ -1,6 +1,13 @@
 from operator import itemgetter
 from model import db_connector
 def get_by_shopper_id(shopper_id):
+    """This is to get orders and rquired fields using shopper_id. This function can be extended by appending fields but don't-
+    change the order of existing fields in select query.
+        Args:
+            shopper_id(string): this is the shopper_id taken from the user
+        Returns: 
+            list: the list contains an array for the selected fields for each row.
+    """
     con = db_connector.get_connection()
     cursor = con.cursor()
     query = """select so.order_id 
@@ -26,6 +33,13 @@ def get_by_shopper_id(shopper_id):
     return ret
 
 def get_shopper_delevery_addresses(shopper_id):
+    """This is to get delivery address and rquired fields using shopper_id. This function can be extended by appending fields but don't-
+    change the order of existing fields in select query.
+        Args:
+            shopper_id(string): this is the shopper_id taken from the user
+        Returns: 
+            list: the list contains an array for the selected fields for each row.
+    """
     con = db_connector.get_connection()
     cursor = con.cursor()
     query = """
@@ -50,6 +64,13 @@ def get_shopper_delevery_addresses(shopper_id):
     return ret
 
 def get_cards(shopper_id):
+    """This is to get payment card and rquired fields using shopper_id. This function can be extended by appending fields but don't-
+    change the order of existing fields in select query.
+        Args:
+            shopper_id(string): this is the shopper_id taken from the user
+        Returns: 
+            list: the list contains an array for the selected fields for each row.
+    """
     con = db_connector.get_connection()
     cursor = con.cursor()
     query = """
@@ -70,22 +91,42 @@ def get_cards(shopper_id):
     con.close()
     return ret
 
-def get_sequence_number(table_name):
-    con = db_connector.get_connection()
-    cursor = con.cursor()
-    query = "SELECT IFNULL((SELECT seq + 1 FROM sqlite_sequence WHERE name = \"{}\"  ), 1)".format(table_name)
-    cursor.execute(query)
-    ret = cursor.fetchone()
-    con.close()
-    return ret[0]
-
-
 def creae_order(params):
+    """This is handling few functionalities regarding order creation in transaction
+            1. create delivery address if it is not available
+            2. create payent card if it is not available
+            3. Create shopper order
+            4. Create shoper orders contents for each product in the basket contents
+            5. Delete basket contents for the shopper
+            6. Delete basket record for the shopper
+        Args:
+            params(dictionary): this object should have values as follows
+                shopper_id(string): considering shopper id
+                basket(list): this should be a list of basket items having following filelds
+                    product_id(string): the product id from products table
+                    seller_id(string): the seller id of the product
+                    quantity(integer): the added quantity of the product
+                    price(float): the unit price of the product
+                d_add_id(string): the delivery address id from the table if shopper has a selected delivery address
+                card_id(string): the payment card id from the table if shopper has a selected card
+                d_address(dictinary): a dictionary object if shopper need to create a new delivery address with following elements
+                    add_line_1(string): the values taken from user
+                    add_line_2(string): the values taken from user
+                    add_line_3(string): the values taken from user
+                    country(string): the values taken from user
+                    post_code(string): the values taken from user
+                card(dictionary): a dictionary object having following elements when it is required to create new address
+                    c_type(string): user entered card type
+                    c_number(string): use entered card id having 16 digits
+        Returns:
+            bool: True if successfuly create the order or False if any exception.
+
+    """
     con = db_connector.get_connection()
     cursor = con.cursor()
     cursor.execute("PRAGMA foreign_keys=ON")  # Enforce foreign keys
     cursor.execute("BEGIN TRANSACTION")	
-
+    # extract elements into variables from dictionary
     shopper_id, basket, d_add_id, card_id, d_address, card = itemgetter(
         'shopper_id', 'basket', 'd_add_id', 'card_id', 'd_address', 'card'
     )(params)
@@ -95,7 +136,7 @@ def creae_order(params):
             add_line_1, add_line_2, add_line_3, country, post_code = itemgetter(
                 'add_line_1', 'add_line_2', 'add_line_3', 'country', 'post_code'
             )(d_address)
-            d_add_id = get_sequence_number("shopper_delivery_addresses")
+            d_add_id = db_connector.get_sequence_number("shopper_delivery_addresses")
             add_q = """INSERT INTO shopper_delivery_addresses(
                             delivery_address_id
                             ,delivery_address_line_1
@@ -117,7 +158,7 @@ def creae_order(params):
             ))
         # Create a card when the card id is none
         if card_id == None:
-            card_id = get_sequence_number("shopper_payment_cards") 
+            card_id = db_connector.get_sequence_number("shopper_payment_cards") 
             c_type, c_number = itemgetter(
                 'c_type', 'c_number'
             )(card)  
@@ -135,7 +176,7 @@ def creae_order(params):
                 ,c_number
             ))
         # Create order
-        order_id = get_sequence_number("shopper_orders")
+        order_id = db_connector.get_sequence_number("shopper_orders")
         order_q = """ INSERT INTO shopper_orders(
             order_id, shopper_id, delivery_address_id, payment_card_id, order_date, order_status
         )
