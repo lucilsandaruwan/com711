@@ -84,4 +84,5 @@ def init():
     except :
         exception_msg()
         init()
+# the entry point of the app which calls the init function to boot application
 init()
