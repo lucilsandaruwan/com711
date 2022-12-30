@@ -11,6 +11,7 @@ from view import str_format as sf
 
 #The global variable holds the menu items to display when it is required to display
 MENUE_ITEMS = (
+    "\n{}\n" 
     "\n0   Show menue"
     "\n1   Display your order history"
     "\n2   Add an item to your basket"
@@ -18,7 +19,7 @@ MENUE_ITEMS = (
     "\n4   Checkout"
     "\n5   Exit"
     "\n6   Change Shopper"
-)
+).format(sf.underline("ORINOCO – SHOPPER MAIN MENU                                           "))
 
 def exit_greeting():
     print(sf.sucess("Good bye!"))

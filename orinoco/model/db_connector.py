@@ -1,6 +1,6 @@
 # This file contains the data base connection related common functions to be used in other models.
 import sqlite3
-DB_PATH = "db/orinoco.db"
+DB_PATH = "db/orinoco_1.db"
 def get_connection():
     """This returns a normal connection wich gives rows in results for select quaries are as arrays.
         Returns:
