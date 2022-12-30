@@ -1,0 +1,37 @@
+
+        {
+
+                "Seller Account Ref": "OUK00001"
+                ,"Seller Name": "DigiTec Limited"
+                ,"Product Code": "MP45322289"
+                ,"Product Description": "Huawei Y6 32GB 6.09 inch Smartphone"	
+                ,"No. of Orders": "5"	
+                ,"Total quantity sold": "30"
+                ,"Total Value of Sales": "£3225.00"
+                
+        }
+,
+        {
+
+            "Seller Account Ref": "OUK00001"
+            ,"Seller Name": "DigiTec Limited"
+            ,"Product Code": "MP56889550"
+            ,"Product Description": "Samsung Galaxy M30s SIM Free Smartphone"	
+            ,"No. of Orders": "1"	// ignored the order 7321004 which is canceled
+            ,"Total quantity sold": "4"
+            ,"Total Value of Sales": "996" // 4*249
+            
+        }
+
+        {
+
+            "Seller Account Ref": "ORI00001"
+            ,"Seller Name": "Orinoco UK"
+            ,"Product Code": "TV30399302"
+            ,"Product Description": "Sony Bravia 32 inch HD TV Black"	
+            ,"No. of Orders": "1"	
+            ,"Total quantity sold": "1"
+            ,"Total Value of Sales": "237.98" // 4*249
+            
+        }
+

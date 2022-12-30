@@ -1,3 +1,4 @@
+# this file is created to format the prompt messages in from a central point.
 HEADER = '\033[95m'
 OKBLUE = '\033[94m'
 OKCYAN = '\033[96m'

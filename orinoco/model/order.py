@@ -1,3 +1,4 @@
+# This file contains the functions related to data base queries regarding orders
 from operator import itemgetter
 from model import db_connector
 def get_by_shopper_id(shopper_id):
