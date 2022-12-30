@@ -14,6 +14,9 @@ def order_history(shopper_id):
         Returns: void
     """
     orders = o_mdl.get_by_shopper_id(shopper_id)
+    if not orders:
+        print(sf.warning("\nNo orders placed by this customer"))
+        return 
     # get only the first 6 selected fields from the model to display
     v_orders = orders[0:7]
     # setting headers with the width of each column to show in the table

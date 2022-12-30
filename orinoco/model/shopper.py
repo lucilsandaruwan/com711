@@ -10,7 +10,6 @@ def get_shopper_by_id(shopper_id):
     """
     try:
         con = db_connector.get_dict_connection()
-        print("type is: ", type(con))
         cursor = con.cursor()
         query = "SELECT shopper_id, shopper_first_name FROM shoppers WHERE shopper_id = ?"
         cursor.execute(query, (shopper_id,))
